@@ -1,0 +1,217 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────────
+   Dauphin Royal — Editorial v2
+   Aesthetic: editorial / consulting-firm. Sharp 0px geometry,
+   maximum contrast, monospace labels, single gold accent.
+   ────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* ── Palette ── */
+  --color-ink:          #0D0D0D;
+  --color-ink-soft:     #1A1A1A;
+  --color-navy:         #1A3A6B;
+  --color-gold:         #F5A623;
+  --color-gold-deep:    #D98E0F;
+  --color-whatsapp:      #25D366;
+  --color-whatsapp-deep: #1EAE54;
+  --color-rule:         #E8E8E8;
+  --color-rule-strong:  #D4D4D4;
+  --color-surface:      #F7F8FA;
+  --color-surface-2:    #EFEFEF;
+  --color-muted:        #6B7280;
+  --color-muted-2:      #9CA3AF;
+
+  /* ── Typography ── */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body:    Inter, system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --font-serif:   "Instrument Serif", Georgia, serif;
+
+  /* ── Letter-spacing token → enables `tracking-mono` ── */
+  --tracking-mono: 0.2em;
+
+  --default-font-family: Inter, system-ui, sans-serif;
+}
+
+@layer base {
+  /* HARD reset: every element is square. */
+  *, *::before, *::after { border-radius: 0 !important; }
+
+  /* v4 default border color is currentColor; restore the rule grey so a bare
+     `border` / `border-t` shows the editorial hairline. */
+  *, *::before, *::after { border-color: var(--color-rule); }
+
+  html { scroll-behavior: smooth; }
+  html, body { overflow-x: hidden; }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    background: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.025em;
+  }
+
+  ::selection { background: var(--color-gold); color: var(--color-ink); }
+  :focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+  body.menu-open { overflow: hidden; }
+
+  /* Anchor jumps must clear the fixed nav (68px bar + 32px utility bar). */
+  #accueil, #apropos, #services, #produits, #contact { scroll-margin-top: 80px; }
+  @media (min-width: 768px) {
+    #accueil, #apropos, #services, #produits, #contact { scroll-margin-top: 112px; }
+  }
+}
+
+/* ── Font-family helpers (also exposed as Tailwind font-* utilities) ── */
+.font-display { font-family: var(--font-display); }
+.font-mono    { font-family: var(--font-mono); }
+.font-serif   { font-family: var(--font-serif); }
+
+/* ── Monospace section label ── */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-muted);
+}
+
+/* ── Horizontal rules ── */
+.rule      { border: 0; border-top: 1px solid var(--color-rule); margin: 0; }
+.rule-gold { border: 0; border-top: 1px solid var(--color-gold); margin: 0; }
+
+/* ── Reveal on scroll (driven by IntersectionObserver in Layout.astro) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.06s; }
+.reveal-d2 { transition-delay: 0.14s; }
+.reveal-d3 { transition-delay: 0.22s; }
+.reveal-d4 { transition-delay: 0.30s; }
+.reveal-d5 { transition-delay: 0.38s; }
+
+/* ── Underline-on-hover nav links ── */
+.navlink { position: relative; }
+.navlink::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -6px;
+  height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.navlink:hover::after { transform: scaleX(1); }
+
+/* ── Editorial nav (white by default, inverts to ink on scroll) ── */
+.ed-nav__bar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--color-rule);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.ed-nav.is-scrolled .ed-nav__bar { background: var(--color-ink); border-color: var(--color-ink); }
+
+.ed-nav__logo { color: var(--color-ink); transition: color 0.3s ease; }
+.ed-nav.is-scrolled .ed-nav__logo { color: #ffffff; }
+
+.ed-nav__est { color: var(--color-muted); transition: color 0.3s ease; }
+.ed-nav.is-scrolled .ed-nav__est { color: var(--color-gold); }
+
+.ed-nav__link { color: var(--color-muted); transition: color 0.2s ease; }
+.ed-nav__link:hover { color: var(--color-ink); }
+.ed-nav.is-scrolled .ed-nav__link { color: rgba(255, 255, 255, 0.65); }
+.ed-nav.is-scrolled .ed-nav__link:hover { color: #ffffff; }
+
+.ed-nav__cta {
+  background: var(--color-ink); color: #ffffff; border: 1px solid var(--color-ink);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.ed-nav__cta:hover { background: var(--color-gold); color: var(--color-ink); border-color: var(--color-gold); }
+.ed-nav.is-scrolled .ed-nav__cta { background: var(--color-gold); color: var(--color-ink); border-color: var(--color-gold); }
+.ed-nav.is-scrolled .ed-nav__cta:hover { background: #ffffff; border-color: #ffffff; }
+
+.ed-nav__menu { color: var(--color-ink); border: 1px solid var(--color-ink); transition: color 0.3s ease, border-color 0.3s ease; }
+.ed-nav.is-scrolled .ed-nav__menu { color: #ffffff; border-color: rgba(255, 255, 255, 0.3); }
+
+/* Logo swaps colour ↔ white with the bar inversion. */
+.ed-logo--white { display: none; }
+.ed-nav.is-scrolled .ed-logo--color { display: none; }
+.ed-nav.is-scrolled .ed-logo--white { display: block; }
+
+/* ── Marquee ── */
+.marquee-track {
+  display: inline-flex;
+  will-change: transform;
+  animation: marquee 38s linear infinite;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-pause:hover .marquee-track { animation-play-state: paused; }
+
+/* ── Product card hover navy outline ── */
+.product-card {
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  transition: outline-color 0.2s ease, transform 0.4s ease;
+}
+.product-card:hover { outline-color: var(--color-navy); }
+.product-card.is-dimmed { opacity: 0.25; filter: grayscale(1); pointer-events: none; }
+
+/* ── Service row hover image reveal (desktop only) ── */
+.svc-row { position: relative; }
+.svc-thumb {
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%) translateX(20px) scale(0.96);
+  width: 200px;
+  height: 130px;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  z-index: 5;
+  filter: grayscale(0.05) contrast(1.05);
+  box-shadow: 0 20px 50px rgba(13, 13, 13, 0.18);
+}
+@media (min-width: 1024px) {
+  .svc-row:hover .svc-thumb { opacity: 1; transform: translateY(-50%) translateX(0) scale(1); }
+}
+
+/* ── Editorial drop-cap ── */
+.dropcap::first-letter {
+  font-family: var(--font-serif);
+  font-style: italic;
+  float: left;
+  font-size: 5.2em;
+  line-height: 0.85;
+  padding: 0.08em 0.12em 0 0;
+  color: var(--color-gold);
+  font-weight: 400;
+}
+
+/* ── Hero image scale ticks ── */
+.ticks { background-image: repeating-linear-gradient(to bottom, var(--color-ink) 0 1px, transparent 1px 16px); }
+
+/* ── WhatsApp FAB (52px square, WhatsApp green, darkens on hover) ── */
+.wa-fab {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  z-index: 50;
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--color-whatsapp);
+  color: #ffffff;
+  border: 1px solid var(--color-whatsapp-deep);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.wa-fab:hover { background: var(--color-whatsapp-deep); color: #ffffff; }

@@ -1,0 +1,17 @@
+node_modules
+dist
+build
+.vercel
+.astro
+coverage
+*.log
+
+# env files (keep the example template)
+.env
+.env.*
+!.env.example
+
+.DS_Store
+.idea
+.vscode
+*.suo

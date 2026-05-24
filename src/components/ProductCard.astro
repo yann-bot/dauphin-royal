@@ -1,0 +1,30 @@
+---
+import type { Product } from '../lib/data';
+interface Props { product: Product; filterable?: boolean; }
+const { product, filterable = false } = Astro.props;
+const { slug, image, categoryLabel, name, description, price, category } = product;
+---
+<a
+  href={`/produit/${slug}`}
+  class="product-card group relative bg-white flex flex-col transition-all duration-300 hover:z-10"
+  {...(filterable ? { 'data-category': category } : {})}
+>
+  <div class="relative h-[200px] overflow-hidden bg-surface">
+    <img src={image} alt={name} loading="lazy"
+      class="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
+    <span class="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-mono text-ink bg-white px-2 py-1">{categoryLabel}</span>
+  </div>
+  <div class="p-5 flex flex-col flex-1">
+    <h3 class="font-display font-bold text-ink text-[15px] leading-snug">{name}</h3>
+    <p class="mt-2 text-muted text-[12.5px] leading-relaxed line-clamp-2">{description}</p>
+    <div class="mt-auto pt-5 flex items-end justify-between gap-3">
+      <div>
+        <div class="font-mono text-[9.5px] uppercase tracking-mono text-muted">À partir de</div>
+        <div class="mt-0.5 font-display font-bold text-ink text-[16px] tracking-tight">{price}</div>
+      </div>
+      <span class="inline-flex items-center justify-center h-9 px-3.5 bg-ink text-white text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors group-hover:bg-gold group-hover:text-ink whitespace-nowrap">
+        Voir →
+      </span>
+    </div>
+  </div>
+</a>

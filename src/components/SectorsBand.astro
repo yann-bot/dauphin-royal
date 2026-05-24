@@ -1,0 +1,23 @@
+---
+import { MARQUEE_ITEMS } from '../lib/data';
+const prefix = 'Secteurs servis';
+// Quadruple the list so the -50% loop has enough overflow to be seamless.
+const doubled = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
+---
+<div class="bg-ink text-white border-y border-ink overflow-hidden marquee-pause">
+  <div class="flex items-stretch">
+    <div class="hidden md:flex shrink-0 items-center px-6 bg-gold text-ink font-mono text-[10px] uppercase tracking-mono font-medium">
+      {prefix} ↓
+    </div>
+    <div class="relative flex-1 overflow-hidden">
+      <div class="marquee-track py-4">
+        {doubled.map((it) => (
+          <span class="inline-flex items-center px-7 font-display text-[20px] md:text-[26px] tracking-[-0.01em]">
+            {it}
+            <span class="ml-7 text-gold font-serif italic text-[24px] md:text-[30px] -translate-y-0.5">✦</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>

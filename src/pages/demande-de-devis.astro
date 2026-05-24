@@ -1,0 +1,279 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav    from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppIcon from '../components/WhatsAppIcon.astro';
+import { PREFIXES, DEVIS_SERVICES, CONTACT_METHODS } from '../lib/validate';
+import { COMPANY, telHref } from '../lib/data';
+
+const labelCls = 'block font-mono text-[11px] uppercase tracking-mono text-muted mb-2';
+const inputCls = 'w-full h-12 px-4 bg-white border border-rule text-ink text-[15px] placeholder:text-muted-2 focus:border-ink focus:outline-none transition-colors';
+const errCls   = 'field-error mt-1.5 text-[12px] text-[#dc2626] hidden';
+---
+
+<Layout
+  title="Demande de devis — Dauphin Royal | Bangui, RCA"
+  description="Demandez un devis gratuit à Dauphin Royal : mobilier, informatique, imprimerie et papeterie. Réponse sous 24 heures ouvrées à Bangui."
+>
+  <Nav />
+  <main class="bg-white pt-20 md:pt-28">
+    <section class="border-b border-rule">
+      <div class="max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-16">
+        <div class="grid grid-cols-12 gap-8 md:gap-12 items-end reveal">
+          <div class="col-span-12 md:col-span-9">
+            <div class="flex items-center gap-3 font-mono text-[11px] uppercase tracking-mono text-muted">
+              <a href="/#contact" class="text-ink hover:text-gold transition-colors">← Accueil</a>
+              <span class="text-rule-strong">/</span>
+              <span>Devis</span>
+            </div>
+            <h1 class="mt-6 font-display font-bold text-ink text-[40px] sm:text-[56px] lg:text-[72px] leading-[0.98] tracking-[-0.035em]">
+              Demande<br />
+              <span class="font-serif italic font-normal text-gold">de devis.</span>
+            </h1>
+          </div>
+          <div class="col-span-12 md:col-span-3 md:text-right">
+            <div class="font-mono text-[10px] uppercase tracking-mono text-muted">Réponse moyenne</div>
+            <div class="mt-1 font-display font-bold text-ink text-[22px]">24 h ouvrées</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="max-w-7xl mx-auto px-6 md:px-10 py-14 md:py-20">
+        <div class="grid grid-cols-12 gap-10 lg:gap-16">
+          <!-- Left: context -->
+          <aside class="col-span-12 lg:col-span-4 reveal">
+            <div class="mono-label">// Comment ça marche</div>
+            <p class="mt-5 text-muted text-[15px] leading-relaxed max-w-sm">
+              Décrivez votre besoin — un seul produit ou l'équipement complet d'un service. Un chargé de compte étudie votre demande et revient vers vous avec une proposition adaptée à votre budget et vos délais.
+            </p>
+
+            <div class="mt-10 space-y-7">
+              {[
+                { n: '01', t: 'Vous décrivez', d: 'Remplissez le formulaire, joignez un cahier des charges si besoin.' },
+                { n: '02', t: 'Nous chiffrons', d: 'Devis détaillé envoyé sous 24 heures ouvrées, tarifs HT.' },
+                { n: '03', t: 'Nous livrons', d: 'Validation, puis livraison et installation à Bangui sous 24–48 h.' },
+              ].map((s) => (
+                <div class="grid grid-cols-12 gap-4">
+                  <div class="col-span-2 font-mono text-gold text-[14px] tracking-mono pt-0.5">{s.n}</div>
+                  <div class="col-span-10">
+                    <h3 class="font-display font-bold text-ink text-[16px] tracking-tight">{s.t}</h3>
+                    <p class="mt-1 text-muted text-[13.5px] leading-relaxed">{s.d}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <hr class="rule my-9" />
+
+            <div class="mono-label">// Plutôt nous appeler ?</div>
+            <div class="mt-4 space-y-1.5">
+              {COMPANY.phones.map((p) => (
+                <a href={telHref(p)} class="block font-display font-bold text-ink text-[18px] hover:text-gold transition-colors">{p}</a>
+              ))}
+              <a href={COMPANY.whatsapp} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-3 font-mono text-[12px] uppercase tracking-mono text-ink hover:text-whatsapp transition-colors"><WhatsAppIcon size={14} />WhatsApp →</a>
+            </div>
+          </aside>
+
+          <!-- Right: form -->
+          <div class="col-span-12 lg:col-span-8 reveal reveal-d2">
+            <form id="devis-form" novalidate enctype="multipart/form-data" class="border border-rule">
+              <div class="p-6 md:p-10 space-y-8">
+
+                <!-- Identité -->
+                <fieldset class="space-y-6">
+                  <legend class="mono-label text-ink!">// 01 · Vos coordonnées</legend>
+
+                  <div class="grid grid-cols-12 gap-5">
+                    <div class="col-span-12 sm:col-span-3">
+                      <label class={labelCls} for="prefix">Civilité</label>
+                      <select id="prefix" name="prefix" class={inputCls}>
+                        <option value="">—</option>
+                        {PREFIXES.map((p) => <option value={p}>{p}</option>)}
+                      </select>
+                    </div>
+                    <div class="col-span-12 sm:col-span-9">
+                      <label class={labelCls} for="name">Nom du contact <span class="text-gold">*</span></label>
+                      <input id="name" name="name" type="text" required autocomplete="name" placeholder="Jean Mbeki" class={inputCls} />
+                      <p class={errCls} data-error="name"></p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class={labelCls} for="company">Nom de l'entreprise</label>
+                    <input id="company" name="company" type="text" autocomplete="organization" placeholder="Banque de l'Oubangui" class={inputCls} />
+                    <p class={errCls} data-error="company"></p>
+                  </div>
+
+                  <div class="grid grid-cols-12 gap-5">
+                    <div class="col-span-12 sm:col-span-6">
+                      <label class={labelCls} for="email">Adresse e-mail <span class="text-gold">*</span></label>
+                      <input id="email" name="email" type="email" required autocomplete="email" placeholder="contact@entreprise.cf" class={inputCls} />
+                      <p class={errCls} data-error="email"></p>
+                    </div>
+                    <div class="col-span-12 sm:col-span-6">
+                      <label class={labelCls} for="phone">Numéro de téléphone <span class="text-gold">*</span></label>
+                      <input id="phone" name="phone" type="tel" required autocomplete="tel" placeholder="+236 75 00 00 00" class={inputCls} />
+                      <p class={errCls} data-error="phone"></p>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <hr class="rule" />
+
+                <!-- Besoin -->
+                <fieldset class="space-y-6">
+                  <legend class="mono-label text-ink!">// 02 · Votre besoin</legend>
+
+                  <div>
+                    <span class={labelCls}>Services concernés</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {DEVIS_SERVICES.map((s) => (
+                        <label class="flex items-center gap-3 border border-rule px-4 h-12 cursor-pointer hover:border-ink transition-colors">
+                          <input type="checkbox" name="services" value={s} class="w-4 h-4 accent-gold" />
+                          <span class="text-ink text-[14px]">{s}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <p class={errCls} data-error="services"></p>
+                  </div>
+
+                  <div>
+                    <label class={labelCls} for="notes">Notes complémentaires</label>
+                    <textarea id="notes" name="notes" rows="5" maxlength="1000" placeholder="Quantités, références, contraintes de délai, lieu de livraison…"
+                      class="w-full py-3 px-4 bg-white border border-rule text-ink text-[15px] leading-relaxed placeholder:text-muted-2 focus:border-ink focus:outline-none transition-colors resize-y"></textarea>
+                    <div class="mt-1.5 flex items-center justify-between">
+                      <p class={errCls} data-error="notes"></p>
+                      <span class="ml-auto font-mono text-[10px] uppercase tracking-mono text-muted-2"><span data-count>0</span> / 1000</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class={labelCls} for="file">Pièce jointe <span class="font-sans normal-case tracking-normal text-muted-2 text-[11px]">(cahier des charges, plan… — optionnel)</span></label>
+                    <input id="file" name="file" type="file"
+                      class="block w-full text-[13px] text-muted file:mr-4 file:h-11 file:px-5 file:border file:border-ink file:bg-ink file:text-white file:text-[11px] file:font-semibold file:uppercase file:tracking-widest hover:file:bg-gold hover:file:text-ink file:cursor-pointer cursor-pointer" />
+                  </div>
+                </fieldset>
+
+                <hr class="rule" />
+
+                <!-- Contact preference -->
+                <fieldset class="space-y-4">
+                  <legend class="mono-label text-ink!">// 03 · Comment souhaitez-vous être contacté ?</legend>
+                  <div class="flex flex-wrap gap-3">
+                    {CONTACT_METHODS.map((m, i) => (
+                      <label class="inline-flex items-center gap-2.5 border border-rule px-5 h-11 cursor-pointer hover:border-ink transition-colors">
+                        <input type="radio" name="contactMethod" value={m} checked={i === 1} class="w-4 h-4 accent-gold" />
+                        <span class="text-ink text-[14px]">{m}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <!-- Honeypot (anti-spam) -->
+                <div class="hidden" aria-hidden="true">
+                  <label>Ne pas remplir<input type="text" name="honeypot" tabindex="-1" autocomplete="off" /></label>
+                </div>
+              </div>
+
+              <!-- Footer bar -->
+              <div class="border-t border-rule px-6 md:px-10 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-surface">
+                <p class="font-mono text-[10px] uppercase tracking-mono text-muted flex items-center gap-2">
+                  <span class="text-gold">●</span> Vos informations personnelles ne seront pas divulguées.
+                </p>
+                <button type="submit"
+                  class="inline-flex items-center justify-center gap-2 h-12 px-7 bg-ink text-white border border-ink text-[12px] font-semibold uppercase tracking-widest hover:bg-gold hover:text-ink hover:border-gold transition-colors disabled:opacity-50 disabled:pointer-events-none">
+                  Envoyer →
+                </button>
+              </div>
+
+              <!-- Status banner -->
+              <div data-status class="hidden border-t px-6 md:px-10 py-4 font-mono text-[12px] uppercase tracking-mono"></div>
+            </form>
+
+            <!-- Success panel (revealed after submit) -->
+            <div id="devis-success" class="hidden border border-ink p-10 md:p-14 text-center">
+              <div class="mono-label text-gold! mx-auto">// Demande reçue · §✓</div>
+              <h2 class="mt-6 font-display font-bold text-ink text-[30px] md:text-[40px] leading-[1.05] tracking-[-0.03em]">
+                Merci.<br />
+                <span class="font-serif italic font-normal text-muted">Votre demande est partie.</span>
+              </h2>
+              <p class="mt-5 text-muted text-[15px] max-w-md mx-auto" data-success-msg>
+                Un chargé de compte vous recontacte sous 24 heures ouvrées.
+              </p>
+              <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+                <a href="/#produits" class="inline-flex items-center justify-center gap-2 h-11 px-5 bg-ink text-white border border-ink text-[12px] font-semibold uppercase tracking-widest hover:bg-white hover:text-ink transition-colors">← Retour au catalogue</a>
+                <a href={COMPANY.whatsapp} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 h-11 px-5 bg-whatsapp text-white border border-whatsapp text-[12px] font-semibold uppercase tracking-widest hover:bg-whatsapp-deep hover:border-whatsapp-deep transition-colors"><WhatsAppIcon mono class="text-white" />WhatsApp</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  const form = document.getElementById('devis-form') as HTMLFormElement | null;
+  const successPanel = document.getElementById('devis-success');
+  const statusEl = form?.querySelector<HTMLElement>('[data-status]');
+
+  // Live character counter for the notes field.
+  const notes = form?.querySelector<HTMLTextAreaElement>('#notes');
+  const counter = form?.querySelector<HTMLElement>('[data-count]');
+  notes?.addEventListener('input', () => { if (counter) counter.textContent = String(notes.value.length); });
+
+  const showStatus = (kind: 'error' | 'ok', msg: string) => {
+    if (!statusEl) return;
+    statusEl.textContent = msg;
+    statusEl.classList.remove('hidden', 'text-[#dc2626]', 'text-gold', 'border-[#dc2626]/30', 'border-gold/40');
+    if (kind === 'error') statusEl.classList.add('text-[#dc2626]', 'border-[#dc2626]/30');
+    else statusEl.classList.add('text-gold', 'border-gold/40');
+  };
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Reset previous errors / status.
+    form.querySelectorAll<HTMLElement>('[data-error]').forEach((el) => { el.textContent = ''; el.classList.add('hidden'); });
+    statusEl?.classList.add('hidden');
+
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Envoi…';
+
+    try {
+      const res = await fetch('/api/devis', { method: 'POST', body: new FormData(form) });
+      const json = await res.json().catch(() => ({}));
+
+      if (res.ok && json.success) {
+        const msg = form.parentElement?.querySelector<HTMLElement>('[data-success-msg]');
+        if (msg && json.message) msg.textContent = json.message;
+        form.classList.add('hidden');
+        successPanel?.classList.remove('hidden');
+        successPanel?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      if (res.status === 422 && json.errors) {
+        Object.entries(json.errors).forEach(([field, msgs]) => {
+          const el = form.querySelector<HTMLElement>(`[data-error="${field}"]`);
+          if (el && Array.isArray(msgs) && msgs[0]) { el.textContent = msgs[0] as string; el.classList.remove('hidden'); }
+        });
+        const firstBad = form.querySelector<HTMLElement>('[data-error]:not(.hidden)');
+        firstBad?.previousElementSibling?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showStatus('error', 'Veuillez corriger les champs indiqués.');
+      } else {
+        showStatus('error', 'Une erreur est survenue. Réessayez ou appelez-nous.');
+      }
+    } catch {
+      showStatus('error', 'Connexion impossible. Vérifiez votre réseau et réessayez.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  });
+</script>

@@ -1,0 +1,87 @@
+---
+import Btn from './Btn.astro';
+import ProductCard from './ProductCard.astro';
+import { PRODUCTS, PRODUCT_CATEGORIES } from '../lib/data';
+
+const counts: Record<string, number> = { tous: PRODUCTS.length };
+PRODUCTS.forEach((p) => { counts[p.category] = (counts[p.category] || 0) + 1; });
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<section id="produits" class="bg-surface border-t border-rule">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 py-20 md:py-28">
+    <div class="grid grid-cols-12 gap-6 reveal">
+      <div class="col-span-12 md:col-span-8">
+        <div class="mono-label">// Catalogue produits · Aperçu</div>
+        <h2 class="mt-5 font-display font-bold text-ink text-[36px] sm:text-[46px] lg:text-[56px] leading-[1.02] tracking-[-0.03em]">
+          Une sélection<br />
+          <span class="font-serif italic font-normal text-muted">prête à livrer.</span>
+        </h2>
+      </div>
+      <div class="col-span-12 md:col-span-4 flex md:flex-col md:items-end md:justify-end gap-3 md:gap-2">
+        <div class="font-mono text-[10px] uppercase tracking-mono text-muted">Affichage</div>
+        <div class="font-display font-bold text-ink text-[22px]">{pad(PRODUCTS.length)} / 3 000+</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="mt-10 -mx-6 md:mx-0 px-6 md:px-0 overflow-x-auto" role="tablist" aria-label="Filtrer par catégorie">
+      <div class="inline-flex items-center min-w-full" id="product-filters">
+        {PRODUCT_CATEGORIES.map((c, i) => (
+          <button
+            type="button" role="tab" data-filter={c.id} aria-selected={i === 0 ? 'true' : 'false'}
+            class:list={[
+              'product-filter inline-flex items-center gap-2 h-12 px-5 text-[13px] font-semibold uppercase tracking-[0.08em] border whitespace-nowrap transition-colors duration-200 -ml-px first:ml-0',
+              i === 0 ? 'bg-ink text-white border-ink' : 'bg-white text-ink border-rule hover:border-ink',
+            ]}
+          >
+            {c.label}
+            <span class:list={['filter-count font-mono text-[11px]', i === 0 ? 'text-white/60' : 'text-muted']}>({counts[c.id] || 0})</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-rule border border-rule">
+      {PRODUCTS.map((p) => <ProductCard product={p} filterable />)}
+    </div>
+
+    <div class="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 reveal">
+      <p class="text-muted text-[14px] max-w-xl">
+        Plus de 3 000 références disponibles. Tarifs HT, hors livraison. Devis personnalisé envoyé sous 24 heures.
+      </p>
+      <Btn variant="fill-black" href="#contact">Demander le catalogue complet →</Btn>
+    </div>
+  </div>
+</section>
+
+<script>
+  const btns = document.querySelectorAll<HTMLButtonElement>('.product-filter');
+  const cards = document.querySelectorAll<HTMLElement>('.product-card[data-category]');
+
+  btns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter!;
+
+      btns.forEach((b) => {
+        const active = b === btn;
+        b.setAttribute('aria-selected', String(active));
+        b.classList.toggle('bg-ink', active);
+        b.classList.toggle('text-white', active);
+        b.classList.toggle('border-ink', active);
+        b.classList.toggle('bg-white', !active);
+        b.classList.toggle('text-ink', !active);
+        b.classList.toggle('border-rule', !active);
+        b.classList.toggle('hover:border-ink', !active);
+        const count = b.querySelector<HTMLElement>('.filter-count');
+        count?.classList.toggle('text-white/60', active);
+        count?.classList.toggle('text-muted', !active);
+      });
+
+      cards.forEach((card) => {
+        const match = filter === 'tous' || card.dataset.category === filter;
+        card.classList.toggle('is-dimmed', !match);
+      });
+    });
+  });
+</script>

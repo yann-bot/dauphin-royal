@@ -1,0 +1,244 @@
+---
+import Layout      from '../../layouts/Layout.astro';
+import Nav         from '../../components/Nav.astro';
+import Btn         from '../../components/Btn.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import WhatsAppIcon from '../../components/WhatsAppIcon.astro';
+import Contact     from '../../components/Contact.astro';
+import Footer      from '../../components/Footer.astro';
+import {
+  PRODUCTS, PRODUCT_DETAILS, buildRelated, COMPANY,
+  type Product, type ProductDetail,
+} from '../../lib/data';
+
+export function getStaticPaths() {
+  return PRODUCTS.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+interface Props { product: Product; }
+const { product } = Astro.props;
+const details: ProductDetail = PRODUCT_DETAILS[product.id];
+const related = buildRelated(product.slug, product.category);
+
+const mailto = `mailto:${COMPANY.emailPapeterie}?subject=${encodeURIComponent(
+  `Devis · ${product.name} (${details.ref})`,
+)}`;
+const wa = `${COMPANY.whatsapp}?text=${encodeURIComponent(
+  `Bonjour, je souhaite un devis pour ${product.name} (Réf. ${details.ref}).`,
+)}`;
+
+const garantie = details.specs.find(([k]) => k === 'Garantie')?.[1] || 'Sur devis';
+const stockInfo = [
+  { k: 'Stock', v: 'Bangui PK0' },
+  { k: 'Délai', v: '24–48 h' },
+  { k: 'Garantie', v: garantie },
+];
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<Layout
+  title={`${product.name} — ${product.categoryLabel} | Dauphin Royal`}
+  description={`${product.name} · ${details.tagline} ${product.description} Devis sous 24 h à Bangui.`}
+  image={product.image}
+>
+  <Nav />
+  <main>
+    <article class="bg-white pt-20 md:pt-28">
+      <!-- Breadcrumb sub-bar -->
+      <div class="sticky top-20 md:top-28 z-30 bg-white/95 backdrop-blur border-y border-rule">
+        <div class="max-w-7xl mx-auto px-6 md:px-10 h-12 flex items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-mono text-muted">
+          <div class="flex items-center gap-3 overflow-hidden whitespace-nowrap min-w-0">
+            <a href="/#produits" class="text-ink hover:text-gold transition-colors shrink-0">← Catalogue</a>
+            <span class="text-rule-strong shrink-0">/</span>
+            <span class="shrink-0">{product.categoryLabel}</span>
+            <span class="text-rule-strong shrink-0 hidden sm:inline">/</span>
+            <span class="text-ink truncate hidden sm:inline">{product.name}</span>
+          </div>
+          <span class="hidden md:inline text-rule-strong whitespace-nowrap">Réf. {details.ref}</span>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <section class="border-b border-rule">
+        <div class="max-w-[1280px] mx-auto px-6 md:px-10 py-12 md:py-16 lg:py-20">
+          <div class="grid grid-cols-12 gap-8 md:gap-12 items-start">
+            <!-- Image column -->
+            <div class="col-span-12 lg:col-span-7 reveal">
+              <div class="flex items-center justify-between border-b border-ink py-2.5">
+                <span class="font-mono text-[10px] uppercase tracking-mono text-ink">FIG.&nbsp;01 — Produit</span>
+                <span class="font-mono text-[10px] uppercase tracking-mono text-muted">Réf. {details.ref}</span>
+              </div>
+              <div class="relative aspect-[4/3] bg-surface overflow-hidden">
+                <img src={product.image} alt={product.name} loading="eager" class="absolute inset-0 w-full h-full object-cover" />
+                <div class="ticks absolute top-2 right-2 bottom-2 w-px"></div>
+                <div class="absolute top-3 left-3 bg-white px-2.5 py-1.5">
+                  <div class="font-mono text-[9.5px] uppercase tracking-mono text-ink">{product.categoryLabel}</div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between border-t border-ink py-2.5">
+                <span class="font-mono text-[10px] uppercase tracking-mono text-muted">Photographie · D.R.</span>
+                <span class="font-mono text-[10px] uppercase tracking-mono text-ink">Disponible · Bangui</span>
+              </div>
+            </div>
+
+            <!-- Info column -->
+            <div class="col-span-12 lg:col-span-5 reveal reveal-d2 lg:pl-2 flex flex-col">
+              <div class="flex items-center gap-3 font-mono text-[11px] uppercase tracking-mono text-muted">
+                <span class="text-gold">// {product.categoryLabel}</span>
+                <span class="w-5 h-px bg-rule-strong"></span>
+                <span>{details.ref}</span>
+              </div>
+
+              <h1 class="mt-6 font-display font-bold text-ink text-[40px] sm:text-[48px] lg:text-[56px] leading-[0.98] tracking-[-0.035em]">
+                {product.name}
+              </h1>
+
+              <p class="mt-5 font-serif italic text-gold text-[20px] sm:text-[22px] lg:text-[24px] leading-snug">
+                — {details.tagline}
+              </p>
+
+              <p class="mt-6 text-muted text-[15px] leading-[1.65] max-w-md">
+                {product.description}
+              </p>
+
+              <hr class="rule mt-8" />
+
+              <div class="mt-7 flex items-end gap-5">
+                <div>
+                  <div class="font-mono text-[10px] uppercase tracking-mono text-muted">À partir de</div>
+                  <div class="mt-1 font-display font-bold text-ink text-[34px] sm:text-[40px] lg:text-[44px] tracking-[-0.025em] leading-none">{product.price}</div>
+                </div>
+                <div class="font-mono text-[10px] uppercase tracking-mono text-muted pb-1 leading-tight">
+                  HT<br />hors livraison
+                </div>
+              </div>
+
+              <div class="mt-8 flex flex-wrap gap-3">
+                <Btn variant="fill-black" href={mailto}>Demander un devis →</Btn>
+                <Btn variant="whatsapp" href={wa} target="_blank" rel="noopener noreferrer"><WhatsAppIcon mono class="text-white" />WhatsApp</Btn>
+              </div>
+
+              <div class="mt-8 flex items-center gap-3 font-mono text-[11px] uppercase tracking-mono text-muted">
+                <span class="text-gold">●</span>
+                <span class="text-ink">Disponible</span>
+                <span class="text-rule-strong">|</span>
+                <span>Livraison Bangui 24–48 h</span>
+              </div>
+
+              <!-- Mini stock indicators -->
+              <div class="mt-6 grid grid-cols-3 border border-rule">
+                {stockInfo.map((it, i) => (
+                  <div class={`p-3 ${i < 2 ? 'border-r border-rule' : ''}`}>
+                    <div class="font-mono text-[9.5px] uppercase tracking-mono text-muted">{it.k}</div>
+                    <div class="mt-1 font-display font-bold text-ink text-[13px] leading-tight">{it.v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Description -->
+      <section class="bg-white border-b border-rule">
+        <div class="max-w-[1280px] mx-auto px-6 md:px-10 py-16 md:py-24">
+          <div class="grid grid-cols-12 gap-6 md:gap-10">
+            <div class="col-span-12 md:col-span-4 reveal">
+              <div class="mono-label">// Description · §01</div>
+              <h2 class="mt-5 font-display font-bold text-ink text-[28px] md:text-[36px] leading-[1.05] tracking-[-0.025em]">
+                {details.headline}
+              </h2>
+            </div>
+            <div class="col-span-12 md:col-span-8 reveal reveal-d2 space-y-6">
+              {details.longDescription.map((p, i) => (
+                <p class={`text-ink text-[16px] md:text-[17px] leading-[1.7] ${i === 0 ? 'dropcap' : ''}`}>{p}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Specs -->
+      <section class="bg-surface border-b border-rule">
+        <div class="max-w-[1280px] mx-auto px-6 md:px-10 py-16 md:py-24">
+          <div class="grid grid-cols-12 gap-6 md:gap-10">
+            <div class="col-span-12 md:col-span-4 reveal">
+              <div class="mono-label">// Caractéristiques · §02</div>
+              <h2 class="mt-5 font-display font-bold text-ink text-[28px] md:text-[36px] leading-[1.05] tracking-[-0.025em]">
+                Caractéristiques<br />
+                <span class="font-serif italic font-normal text-muted">techniques.</span>
+              </h2>
+              <p class="mt-5 text-muted text-[14px] leading-relaxed max-w-xs">
+                Données fabricant vérifiées en atelier avant chaque livraison.
+              </p>
+            </div>
+            <div class="col-span-12 md:col-span-8 reveal reveal-d2">
+              <dl class="border-y border-ink">
+                {details.specs.map(([k, v], i) => (
+                  <div class={`grid grid-cols-12 gap-4 py-5 ${i < details.specs.length - 1 ? 'border-b border-rule' : ''}`}>
+                    <dt class="col-span-12 md:col-span-4 font-mono text-[11px] uppercase tracking-mono text-muted pt-1.5">{k}</dt>
+                    <dd class="col-span-12 md:col-span-8 font-display font-bold text-ink text-[17px] md:text-[18px] tracking-tight">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Includes -->
+      <section class="bg-white border-b border-rule">
+        <div class="max-w-[1280px] mx-auto px-6 md:px-10 py-16 md:py-24">
+          <div class="grid grid-cols-12 gap-6 md:gap-10">
+            <div class="col-span-12 md:col-span-4 reveal">
+              <div class="mono-label">// Inclus · §03</div>
+              <h2 class="mt-5 font-display font-bold text-ink text-[28px] md:text-[36px] leading-[1.05] tracking-[-0.025em]">
+                Ce qui est<br />
+                <span class="font-serif italic font-normal text-muted">compris.</span>
+              </h2>
+            </div>
+            <div class="col-span-12 md:col-span-8 reveal reveal-d2">
+              <ul class="border-y border-ink">
+                {details.includes.map((it, i) => (
+                  <li class={`flex items-baseline gap-5 py-4 ${i < details.includes.length - 1 ? 'border-b border-rule' : ''}`}>
+                    <span class="font-mono text-[11px] text-gold tracking-mono shrink-0">+ {pad(i + 1)}</span>
+                    <span class="text-ink text-[16px]">{it}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related -->
+      <section class="bg-surface border-b border-rule">
+        <div class="max-w-[1280px] mx-auto px-6 md:px-10 py-16 md:py-24">
+          <div class="grid grid-cols-12 gap-6 mb-10 reveal">
+            <div class="col-span-12 md:col-span-8">
+              <div class="mono-label">// Produits associés · §04</div>
+              <h2 class="mt-5 font-display font-bold text-ink text-[32px] sm:text-[40px] lg:text-[46px] leading-[1.05] tracking-[-0.025em]">
+                Dans la même<br />
+                <span class="font-serif italic font-normal text-muted">famille.</span>
+              </h2>
+            </div>
+            <div class="col-span-12 md:col-span-4 flex md:items-end md:justify-end">
+              <a href="/#produits" class="font-mono text-[12px] uppercase tracking-mono text-ink hover:text-gold transition-colors">
+                ← Voir tout le catalogue
+              </a>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-rule border border-rule">
+            {related.map((p) => <ProductCard product={p} />)}
+          </div>
+        </div>
+      </section>
+
+      <Contact />
+    </article>
+  </main>
+  <Footer />
+</Layout>

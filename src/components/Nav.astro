@@ -1,0 +1,122 @@
+---
+import Btn from './Btn.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { NAV_LINKS, COMPANY, telHref } from '../lib/data';
+
+// Built at deploy time; refreshed client-side for the "En direct" feel.
+const today = new Date().toLocaleDateString('fr-FR', {
+  weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
+});
+const edition = new Date().getFullYear() - 2005;
+---
+
+<header class="ed-nav fixed top-0 inset-x-0 z-40">
+  <!-- Top utility bar -->
+  <div class="hidden md:block bg-ink text-white/65 font-mono text-[10.5px] uppercase tracking-mono">
+    <div class="max-w-7xl mx-auto px-10 h-8 flex items-center justify-between gap-6">
+      <div class="flex items-center gap-5">
+        <span class="text-gold">● En direct</span>
+        <span data-today>{today}</span>
+        <span class="text-white/40">·</span>
+        <span>Bangui, RCA</span>
+      </div>
+      <div class="flex items-center gap-5">
+        <span>Édition n°{edition}</span>
+        <span class="text-white/40">·</span>
+        <a href={telHref(COMPANY.phones[0])} class="hover:text-gold transition-colors">{COMPANY.phones[0]}</a>
+        <span class="text-white/40">·</span>
+        <a href={COMPANY.whatsapp} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 hover:text-whatsapp transition-colors"><WhatsAppIcon size={13} />WhatsApp →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main bar -->
+  <div class="ed-nav__bar">
+    <div class="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between gap-6">
+      <a href="/#accueil" class="ed-nav__logo flex items-center" aria-label="Dauphin Royal — accueil">
+        <img src="/logo-color.png" alt="Dauphin Royal" width="340" height="200" class="ed-logo ed-logo--color h-14 md:h-16 w-auto" />
+        <img src="/logo-white.png" alt="" aria-hidden="true" width="340" height="200" class="ed-logo ed-logo--white h-14 md:h-16 w-auto" />
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-9" aria-label="Navigation principale">
+        {NAV_LINKS.map((l) => (
+          <a href={`/${l.href}`} class="ed-nav__link navlink text-[13px] font-medium">{l.label}</a>
+        ))}
+      </nav>
+
+      <div class="hidden lg:block">
+        <a href="/demande-de-devis" class="ed-nav__cta inline-flex items-center gap-2 h-10 px-5 text-[12px] font-semibold uppercase tracking-[0.12em]">
+          Devis →
+        </a>
+      </div>
+
+      <button type="button" data-menu-open aria-label="Ouvrir le menu" aria-expanded="false"
+        class="ed-nav__menu lg:hidden inline-flex items-center justify-center h-10 px-3 font-mono text-[11px] uppercase tracking-[0.15em]">
+        Menu
+      </button>
+    </div>
+  </div>
+
+  <!-- Full-screen mobile overlay -->
+  <div data-menu-overlay class="lg:hidden fixed inset-0 bg-ink text-white opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="h-20 px-6 flex items-center justify-between border-b border-white/10">
+      <a href="/#accueil" data-menu-close aria-label="Dauphin Royal — accueil">
+        <img src="/logo-white.png" alt="Dauphin Royal" width="340" height="200" class="h-12 w-auto" />
+      </a>
+      <button type="button" data-menu-close aria-label="Fermer"
+        class="inline-flex items-center justify-center h-10 px-3 border border-white/30 font-mono text-[11px] uppercase tracking-[0.15em]">
+        Fermer
+      </button>
+    </div>
+    <nav class="px-6 pt-8 pb-12 flex flex-col" aria-label="Navigation mobile">
+      {NAV_LINKS.map((l, i) => (
+        <a href={`/${l.href}`} data-menu-close class="group flex items-baseline gap-5 py-5 border-b border-white/10">
+          <span class="font-mono text-[11px] text-white/40 tracking-mono">0{i + 1}</span>
+          <span class="font-display font-bold text-[28px] group-hover:text-gold transition-colors">{l.label}</span>
+        </a>
+      ))}
+      <div class="mt-10">
+        <Btn variant="fill-gold" href="/demande-de-devis" class="w-full">Demander un devis →</Btn>
+      </div>
+      <div class="mt-12 space-y-2">
+        <div class="mono-label text-white/60">Contact direct</div>
+        {COMPANY.phones.map((p) => (
+          <a href={telHref(p)} class="block text-white text-[15px] hover:text-gold">{p}</a>
+        ))}
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // ── Scroll inversion ──
+  const nav = document.querySelector<HTMLElement>('.ed-nav');
+  const onScroll = () => nav?.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ── Mobile menu ──
+  const overlay = document.querySelector<HTMLElement>('[data-menu-overlay]');
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  const setOpen = (open: boolean) => {
+    if (!overlay) return;
+    overlay.classList.toggle('opacity-100', open);
+    overlay.classList.toggle('pointer-events-auto', open);
+    overlay.classList.toggle('opacity-0', !open);
+    overlay.classList.toggle('pointer-events-none', !open);
+    document.body.classList.toggle('menu-open', open);
+    openBtn?.setAttribute('aria-expanded', String(open));
+  };
+  openBtn?.addEventListener('click', () => setOpen(true));
+  document.querySelectorAll('[data-menu-close]').forEach((el) =>
+    el.addEventListener('click', () => setOpen(false)),
+  );
+
+  // ── Refresh the utility-bar date to the visitor's "today" ──
+  const todayEl = document.querySelector<HTMLElement>('[data-today]');
+  if (todayEl) {
+    todayEl.textContent = new Date().toLocaleDateString('fr-FR', {
+      weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
+    });
+  }
+</script>

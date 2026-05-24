@@ -1,0 +1,83 @@
+---
+import Btn from './Btn.astro';
+import { HERO_IMAGE, HERO_STATS } from '../lib/data';
+---
+<section id="accueil" class="relative bg-white pt-20 md:pt-28">
+  <!-- Vertical gutter label -->
+  <div class="hidden xl:block pointer-events-none select-none absolute top-35 left-3 z-10 font-mono text-[10px] uppercase tracking-mono text-muted-2"
+    style="writing-mode: vertical-rl; transform: rotate(180deg);">
+    Vol. XX · Bangui · 2026
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 pt-10 md:pt-14 pb-16 md:pb-24 items-start">
+      <!-- Left 60% -->
+      <div class="lg:col-span-7 reveal">
+        <div class="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-mono text-muted">
+          <span>// Édition 2026</span>
+          <span class="w-6 h-px bg-muted-2"></span>
+          <span>Leader des fournitures de bureau</span>
+          <span class="w-6 h-px bg-muted-2"></span>
+          <span>RCA · Depuis 2006</span>
+        </div>
+
+        <h1 class="mt-7 font-display font-bold text-ink text-[48px] sm:text-[68px] lg:text-[88px] xl:text-[96px] leading-[0.97] tracking-[-0.04em]">
+          Équipez<br />
+          <span class="font-serif italic font-normal text-ink">votre</span> entreprise<br />
+          avec les <span class="text-gold">meilleurs.</span>
+        </h1>
+
+        <p class="mt-7 text-muted text-[17px] sm:text-[18px] leading-[1.55] max-w-130">
+          Mobilier, équipements informatiques, imprimerie et papeterie. Une offre complète pour les entreprises, ministères et institutions de la République centrafricaine — depuis vingt ans.
+        </p>
+
+        <div class="mt-9 flex flex-wrap items-center gap-3">
+          <Btn variant="fill-black" href="#produits">Explorer les produits →</Btn>
+          <Btn variant="outline-black" href="/demande-de-devis">Demander un devis</Btn>
+        </div>
+
+        <hr class="rule mt-12" />
+        <dl class="mt-6 flex flex-wrap items-baseline gap-x-7 gap-y-3 text-[13px]">
+          {HERO_STATS.map((s, i) => (
+            <>
+              <div class="flex items-baseline gap-2">
+                <dt class="font-display font-bold text-gold text-[22px] tracking-tight">{s.value}</dt>
+                <dd class="text-muted lowercase">{s.label}</dd>
+              </div>
+              {i < HERO_STATS.length - 1 && <span class="text-rule-strong font-mono" aria-hidden="true">|</span>}
+            </>
+          ))}
+        </dl>
+      </div>
+
+      <!-- Right 40% -->
+      <div class="lg:col-span-5 reveal reveal-d2 relative">
+        <div class="flex items-center justify-between border-b border-ink py-3">
+          <span class="font-mono text-[10px] uppercase tracking-mono text-ink">FIG.&nbsp;01</span>
+          <span class="font-mono text-[10px] uppercase tracking-mono text-muted">Atelier · Bangui PK0</span>
+        </div>
+
+        <div class="relative w-full aspect-4/5 overflow-hidden">
+          <img src={HERO_IMAGE} alt="Équipe Dauphin Royal en bureau moderne à Bangui" class="absolute inset-0 w-full h-full object-cover" loading="eager" />
+          <div class="ticks absolute top-2 right-2 bottom-2 w-px"></div>
+
+          <div class="absolute bottom-0 inset-x-0 h-[38%] bg-navy/92 backdrop-blur-[2px] flex flex-col justify-end px-7 py-7">
+            <div class="font-mono text-[10px] uppercase tracking-mono text-gold mb-3">Établissement</div>
+            <div class="font-display font-bold text-white text-[26px] sm:text-[30px] leading-[1.05] tracking-[-0.02em]">Dauphin Royal</div>
+            <div class="mt-1 text-white/70 font-mono text-[11px] uppercase tracking-mono">Fondée en 2006 · Bangui, RCA</div>
+            <div class="mt-4 pt-4 border-t border-white/20">
+              <div class="font-serif italic text-white text-[19px] sm:text-[22px] leading-snug">
+                « Le partenaire bureautique<br />des leaders en RCA. »
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between border-t border-ink py-3">
+          <span class="font-mono text-[10px] uppercase tracking-mono text-muted">Photographie · D.R.</span>
+          <span class="font-mono text-[10px] uppercase tracking-mono text-ink">100% / 1:1.25</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,25 @@
+---
+// Editorial button primitive. Square, uppercase, border-driven hover invert.
+interface Props {
+  variant?: 'fill-black' | 'outline-black' | 'fill-gold' | 'outline-white' | 'whatsapp';
+  href?: string;
+  class?: string;
+  target?: string;
+  rel?: string;
+}
+const { variant = 'fill-black', href = '#contact', class: className = '', target, rel } = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 h-11 px-5 text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors duration-200 border';
+
+const variants: Record<string, string> = {
+  'fill-black':    'bg-ink text-white border-ink hover:bg-white hover:text-ink',
+  'outline-black': 'bg-transparent text-ink border-ink hover:bg-ink hover:text-white',
+  'fill-gold':     'bg-gold text-ink border-gold hover:bg-ink hover:text-gold hover:border-ink',
+  'outline-white': 'bg-transparent text-white border-white hover:bg-white hover:text-ink',
+  'whatsapp':      'bg-whatsapp text-white border-whatsapp hover:bg-whatsapp-deep hover:border-whatsapp-deep',
+};
+---
+<a href={href} target={target} rel={rel} class={`${base} ${variants[variant]} ${className}`}>
+  <slot />
+</a>

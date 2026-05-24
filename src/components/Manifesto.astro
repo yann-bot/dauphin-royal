@@ -1,0 +1,49 @@
+---
+const facts = [
+  { k: 'Fondée', v: '2006' },
+  { k: 'Siège',  v: 'Bangui, PK0' },
+  { k: 'Équipe', v: '80 collaborateurs' },
+  { k: 'Métiers', v: '4 domaines' },
+];
+---
+<section class="bg-white">
+  <div class="max-w-[1280px] mx-auto px-6 md:px-10 py-24 md:py-32">
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <div class="mono-label reveal">// Manifeste · §01</div>
+        <div class="reveal reveal-d1 mt-4 font-serif italic text-gold text-[42px] sm:text-[56px] leading-[0.9]">
+          « 2006 »
+        </div>
+        <div class="reveal reveal-d2 mt-2 font-mono text-[10px] uppercase tracking-mono text-muted">
+          Année fondatrice
+        </div>
+      </div>
+
+      <div class="col-span-12 md:col-span-9">
+        <h2 class="reveal font-display font-bold text-ink text-[34px] sm:text-[44px] lg:text-[56px] leading-[1.02] tracking-[-0.03em]">
+          Vingt ans de constance,<br />
+          <span class="font-serif italic font-normal text-muted">un seul standard&nbsp;:</span><br />
+          <span class="text-ink">l'exigence.</span>
+        </h2>
+
+        <div class="reveal reveal-d2 mt-10 grid sm:grid-cols-2 gap-8 lg:gap-12">
+          <p class="dropcap text-ink text-[16px] sm:text-[17px] leading-[1.7]">
+            Depuis Bangui, Dauphin Royal équipe les ministères, les banques, les ONG et les entreprises industrielles de la République centrafricaine. Chaque commande engage un standard&nbsp;: stock disponible, livraison sous quarante-huit heures, et un interlocuteur qui répond.
+          </p>
+          <p class="text-muted text-[16px] sm:text-[17px] leading-[1.7]">
+            Quatre métiers — mobilier, informatique, imprimerie, papeterie — réunis sous un même toit pour vous éviter de courir entre plusieurs prestataires. Une organisation pensée pour les institutions qui n'ont pas de marge pour l'à-peu-près&nbsp;: process clairs, factures conformes, équipes formées.
+          </p>
+        </div>
+
+        <div class="reveal reveal-d3 mt-12 pt-8 border-t border-rule grid grid-cols-2 md:grid-cols-4 gap-y-6">
+          {facts.map((it) => (
+            <div>
+              <div class="font-mono text-[10px] uppercase tracking-mono text-muted">{it.k}</div>
+              <div class="mt-1.5 font-display font-bold text-ink text-[18px] tracking-tight">{it.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
